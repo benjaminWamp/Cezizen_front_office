@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import { createCitizen } from "../../services/citizen.service";
+import { createUser } from "../../services/user.service";
 import { TextInput, Button, Title, Text, Card } from "react-native-paper";
 
 export default function SignUpScreen() {
@@ -45,7 +45,7 @@ export default function SignUpScreen() {
         const clerkUserID = signUpAttempt.createdUserId;
 
         try {
-          await createCitizen(clerkUserID);
+          await createUser(clerkUserID);
           router.replace("/");
         } catch (error) {
           console.log(error);

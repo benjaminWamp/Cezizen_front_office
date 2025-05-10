@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Vivactive-front-office",
-    "slug": "Vivactive-front-office",
+    "name": "cezizen-front-office",
+    "slug": "cezizen-front-office",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

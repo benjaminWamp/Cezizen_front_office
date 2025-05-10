@@ -1,11 +1,18 @@
-import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Text, TextInput, Button, Divider, useTheme } from "react-native-paper";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import React, { useState } from "react";
+import { StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, TextInput, Button, Divider, useTheme, PaperProvider, Dialog, Portal } from "react-native-paper";
+import { useForm, Controller } from "react-hook-form";
+import { customTheme } from "../../../utils/theme/theme";
+import { deleteUser, updateUser, updateUserCredtials } from "../../../services/user.service";
+import { useConntedUser } from "../../../utils/ConnectedUserContext";
+import { useRouter } from "expo-router";
+import { useClerk, useUser } from "@clerk/clerk-expo";
+import { SignOutButton } from "../../../components/SignOutButton";
+import * as Linking from "expo-linking";
 
 type FormData = {
-  name: string;
-  surname: string;
+  firstname: string;
+  lastname: string;
   oldPassword: string;
   newPassword: string;
   confirmPassword: string;
@@ -13,179 +20,235 @@ type FormData = {
 
 const AccountSettings = () => {
   const theme = useTheme();
-
+  const router = useRouter();
   const {
     control,
     handleSubmit,
     formState: { errors },
     watch,
+    setError,
   } = useForm<FormData>({
     defaultValues: {
-      name: "",
-      surname: "",
+      firstname: "",
+      lastname: "",
       oldPassword: "",
       newPassword: "",
       confirmPassword: "",
     },
   });
 
-  const newPassword = useWatch({ control, name: "newPassword" });
+  const { user } = useUser();
+  const { connectedUser, handleNonConnectedUser } = useConntedUser();
 
-  const onSubmitInfo = (data: FormData) => {
-    console.log("Infos mises à jour :", data.name, data.surname);
-    // Appelle API update user
+  const [isDeleteDialogVisible, setDeleteDialogVisible] = useState(false); // état pour gérer la visibilité de la modale
+
+  const onSubmitInfo = async (data: FormData) => {
+    const dataToSend = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      clerkId: user?.id,
+    };
+    console.log("Informations envoyées :", dataToSend);
+    if (connectedUser) {
+      console.log("Informations mises à jour :", dataToSend, connectedUser.id);
+
+      const response = await updateUser(connectedUser.id, dataToSend);
+      if (response.data) {
+        router.back();
+      }
+    }
   };
 
-  const onSubmitPassword = (data: FormData) => {
-    console.log(
-      "Mot de passe mis à jour :",
-      data.oldPassword,
-      data.newPassword,
-    );
-    // Appelle API update password
+  const onSubmitPassword = async (data: FormData) => {
+    console.log("Mot de passe mis à jour :", data.oldPassword, data.newPassword);
+    if (user) {
+      const dataToSend = {
+        clerkId: user.id,
+        oldPassword: data.oldPassword,
+        password: data.newPassword,
+      };
+      const response = await updateUserCredtials(dataToSend);
+      if (response.data) {
+        router.back();
+      } else if (response.error) {
+        return setError("oldPassword", {
+          type: "manual",
+          message: "Mot de passe actuel incorrect.",
+        });
+      }
+    }
+  };
+
+  const { signOut } = useClerk();
+
+  const handleDeleteUser = async () => {
+    if (connectedUser) {
+      const response = await deleteUser(connectedUser.id);
+      if (!response.error) {
+        try {
+          await signOut();
+          handleNonConnectedUser(false);
+          Linking.openURL(Linking.createURL("/(home)"));
+        } catch (err) {
+          console.error(JSON.stringify(err, null, 2));
+        }
+      }
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Modifier mes informations</Text>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} style={{ flex: 1 }}>
+      <PaperProvider theme={customTheme}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.title}>Modifier mes informations</Text>
 
-      <Controller
-        control={control}
-        name="name"
-        rules={{ required: "Le prénom est requis" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Prénom"
-            value={value}
-            onChangeText={onChange}
-            error={!!errors.name}
-            style={styles.input}
+          {/* Formulaire pour le nom et prénom */}
+          <Controller
+            control={control}
+            name="firstname"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <TextInput label="Prénom" value={value} onChangeText={onChange} error={!!errors.firstname} style={styles.input} />
+                {errors.firstname && <Text style={styles.error}>{errors.firstname.message}</Text>}
+              </>
+            )}
           />
-        )}
-      />
-      {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
 
-      <Controller
-        control={control}
-        name="surname"
-        rules={{ required: "Le nom est requis" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Nom"
-            value={value}
-            onChangeText={onChange}
-            error={!!errors.surname}
-            style={styles.input}
+          {/* Formulaire pour le nom */}
+          <Controller
+            control={control}
+            name="lastname"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <TextInput label="Nom" value={value} onChangeText={onChange} error={!!errors.lastname} style={styles.input} />
+                {errors.lastname && <Text style={styles.error}>{errors.lastname.message}</Text>}
+              </>
+            )}
           />
-        )}
-      />
-      {errors.surname && (
-        <Text style={styles.error}>{errors.surname.message}</Text>
-      )}
 
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleSubmit(onSubmitInfo)}
-      >
-        Enregistrer les modifications
-      </Button>
+          {/* Bouton pour enregistrer les modifications */}
+          <Button mode="contained" style={styles.button} onPress={handleSubmit(onSubmitInfo)}>
+            Enregistrer les modifications
+          </Button>
 
-      <Divider style={styles.divider} />
+          <Divider style={styles.divider} />
 
-      {/* Partie 2 - Mot de passe */}
-      <Text style={styles.title}>Changer mon mot de passe</Text>
+          {/* Formulaire pour changer le mot de passe */}
+          <Text style={styles.title}>Changer mon mot de passe</Text>
 
-      <Controller
-        control={control}
-        name="oldPassword"
-        rules={{ required: "L'ancien mot de passe est requis" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Ancien mot de passe"
-            value={value}
-            onChangeText={onChange}
-            secureTextEntry
-            error={!!errors.oldPassword}
-            style={styles.input}
+          <Controller
+            name="oldPassword"
+            control={control}
+            rules={{
+              validate: (value, formValues) => {
+                if (formValues.newPassword || value) {
+                  return value ? true : "Ancien mot de passe requis";
+                }
+                return true;
+              },
+            }}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <>
+                <TextInput
+                  label="Ancien mot de passe"
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  error={!!errors.oldPassword}
+                  style={styles.input}
+                />
+                {errors.oldPassword && <Text style={styles.error}>{errors.oldPassword.message}</Text>}
+              </>
+            )}
           />
-        )}
-      />
-      {errors.oldPassword && (
-        <Text style={styles.error}>{errors.oldPassword.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        name="newPassword"
-        rules={{ required: "Le nouveau mot de passe est requis" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Nouveau mot de passe"
-            value={value}
-            onChangeText={onChange}
-            secureTextEntry
-            error={!!errors.newPassword}
-            style={styles.input}
+          <Controller
+            name="newPassword"
+            control={control}
+            rules={{
+              validate: (value, formValues) => {
+                if (formValues.oldPassword || value) {
+                  return value ? true : "Nouveau mot de passe requis";
+                }
+                return true;
+              },
+            }}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <>
+                <TextInput
+                  label="Nouveau mot de passe"
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  error={!!errors.newPassword}
+                  style={styles.input}
+                />
+                {errors.newPassword && <Text style={styles.error}>{errors.newPassword.message}</Text>}
+              </>
+            )}
           />
-        )}
-      />
-      {errors.newPassword && (
-        <Text style={styles.error}>{errors.newPassword.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        name="confirmPassword"
-        rules={{
-          required: "Confirmation du mot de passe requise",
-          validate: (val) =>
-            val === newPassword || "Les mots de passe ne correspondent pas",
-        }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            label="Confirmer le nouveau mot de passe"
-            value={value}
-            onChangeText={onChange}
-            secureTextEntry
-            error={!!errors.confirmPassword}
-            style={styles.input}
+          <Controller
+            name="confirmPassword"
+            control={control}
+            rules={{
+              validate: (value) => {
+                const newPassword = watch("newPassword");
+                if (newPassword || value) {
+                  if (!value) return "Confirmation requise";
+                  if (value !== newPassword) return "Les mots de passe ne correspondent pas";
+                }
+                return true;
+              },
+            }}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <>
+                <TextInput
+                  label="Confirmer le mot de passe"
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  error={!!errors.confirmPassword}
+                  style={styles.input}
+                />
+                {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
+              </>
+            )}
           />
-        )}
-      />
-      {errors.confirmPassword && (
-        <Text style={styles.error}>{errors.confirmPassword.message}</Text>
-      )}
 
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleSubmit(onSubmitPassword)}
-      >
-        Mettre à jour le mot de passe
-      </Button>
+          <Button mode="contained" style={styles.button} onPress={handleSubmit(onSubmitPassword)}>
+            Mettre à jour le mot de passe
+          </Button>
 
-      <Divider style={styles.divider} />
+          <Divider style={styles.divider} />
 
-      {/* Partie 3 - Danger Zone */}
-      <Text style={styles.title}>Compte</Text>
-      <Button
-        mode="outlined"
-        textColor={theme.colors.error}
-        style={styles.button}
-        onPress={() => console.log("Suspendre")}
-      >
-        Suspendre mon compte
-      </Button>
-      <Button
-        mode="text"
-        textColor={theme.colors.error}
-        style={styles.button}
-        onPress={() => console.log("Supprimer")}
-      >
-        Supprimer mon compte
-      </Button>
-    </ScrollView>
+          <Text style={styles.title}>Compte</Text>
+          <SignOutButton />
+
+          {/* Bouton pour ouvrir la modale de suppression de compte */}
+          <Button mode="text" textColor={theme.colors.error} style={styles.button} onPress={() => setDeleteDialogVisible(true)}>
+            Supprimer mon compte
+          </Button>
+
+          {/* Modale de confirmation de suppression */}
+          <Portal>
+            <Dialog visible={isDeleteDialogVisible} onDismiss={() => setDeleteDialogVisible(false)}>
+              <Dialog.Title>Confirmer la suppression</Dialog.Title>
+              <Dialog.Content>
+                <Text>Cette action supprimera définitivement votre compte et toutes vos données. Êtes-vous sûr(e) ?</Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={() => setDeleteDialogVisible(false)}>Annuler</Button>
+                <Button onPress={handleDeleteUser}>Supprimer</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        </ScrollView>
+      </PaperProvider>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -20,7 +20,6 @@ const SubscribeToRessource = (props: SubscribeToRessourceProps) => {
     if (connectedUser) {
       const infos = { citizenId: connectedUser.id, ressourceId: ressource.id };
       const response = await initializeProgression(infos);
-      console.log(response.message);
       hideDialog();
     }
   };
@@ -31,9 +30,7 @@ const SubscribeToRessource = (props: SubscribeToRessourceProps) => {
         <Dialog visible={visible} onDismiss={hideDialog}>
           <Dialog.Title>S'inscrire à la ressource</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">
-              {`Vous confirmer vous inscrire à la ressrouce ${ressource.title} ?`}
-            </Text>
+            <Text variant="bodyMedium">{`Vous confirmer vous inscrire à la ressrouce ${ressource.title} ?`}</Text>
           </Dialog.Content>
 
           <Dialog.Actions>

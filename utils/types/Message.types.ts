@@ -1,4 +1,4 @@
-import { CitizenType } from "./citizen.types";
+import { CitizenType } from "./User.types";
 
 export interface Message {
   id: string;

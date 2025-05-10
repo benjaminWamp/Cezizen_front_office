@@ -1,11 +1,11 @@
 import React from "react";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
-import { CitizenType } from "./types/citizen.types";
+import { UserType } from "./types/User.types";
 import { useUser } from "@clerk/clerk-expo";
-import { getCitizen } from "../services/citizen.service";
+import { getUser } from "../services/user.service";
 
 interface UserContextType {
-  connectedUser: CitizenType | undefined;
+  connectedUser: UserType | undefined;
   userChoseToUnconnect: boolean;
   handleNonConnectedUser: (_: boolean) => void;
 }
@@ -17,24 +17,26 @@ interface UserProviderProps {
 }
 
 export const ConnectedUserProvider = ({ children }: UserProviderProps) => {
-  const [connectedUser, setConnectedUser] = useState<CitizenType | undefined>(undefined);
+  const [connectedUser, setConnectedUser] = useState<UserType | undefined>(undefined);
 
   const [userChoseToUnconnect, setUserChoseToUnconnect] = useState<boolean>(false);
 
   const { user } = useUser();
 
-  const getUser = useCallback(async () => {
+  const getUserActive = useCallback(async () => {
     let bddUser;
 
     if (user) {
-      bddUser = await getCitizen(user.id);
+      bddUser = await getUser(user.id);
+      console.log("User from BDD", bddUser.data);
+
       setConnectedUser(bddUser.data);
       setUserChoseToUnconnect(false);
     }
   }, [user]);
 
   useEffect(() => {
-    getUser();
+    getUserActive();
   }, [getUser]);
 
   const handleNonConnectedUser = (boolean: boolean) => {

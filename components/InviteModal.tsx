@@ -5,7 +5,7 @@ import { Button, Text, Portal, Dialog } from "react-native-paper";
 import { Invite } from "../utils/types/invite.types";
 import { acceptInvite } from "../services/invite.service";
 import { useRouter } from "expo-router";
-import { CitizenType } from "../utils/types/citizen.types";
+import { CitizenType } from "../utils/types/User.types";
 
 interface InviteModalProps {
   selectedInvite: Invite;
@@ -39,10 +39,7 @@ const InviteModal = (props: InviteModalProps) => {
         <Dialog visible={visible} onDismiss={hideDialog}>
           <Dialog.Title>Accepter l'invitation</Dialog.Title>
           <Dialog.Content>
-            <Text>
-              Souhaitez-vous vous inscrire à la ressource :{" "}
-              {selectedInvite?.ressource.title} ?
-            </Text>
+            <Text>Souhaitez-vous vous inscrire à la ressource : {selectedInvite?.ressource.title} ?</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={handleDecline}>Refuser</Button>

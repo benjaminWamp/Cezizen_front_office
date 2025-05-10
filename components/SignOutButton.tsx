@@ -23,7 +23,7 @@ export const SignOutButton = () => {
 
   return (
     <TouchableOpacity onPress={handleSignOut}>
-      <Text>Sign out</Text>
+      <Text>Déconnexion</Text>
     </TouchableOpacity>
   );
 };
