@@ -1,22 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import {
-  Text,
-  TextInput,
-  Button,
-  HelperText,
-  PaperProvider,
-} from "react-native-paper";
+import { Text, TextInput, Button, HelperText, PaperProvider } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { getCategory } from "../../../services/category.service";
 import { getTypeRessource } from "../../../services/typeRessource.service";
 import { Picker } from "@react-native-picker/picker";
 import StepModal from "../../../components/StepModal";
-import {
-  getRessource,
-  updateRessource,
-} from "../../../services/ressources.service";
+import { getRessource, updateRessource } from "../../../services/articles.service";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { StepCreate } from "../../../utils/types/Step.types";
 import { customTheme } from "../../../utils/theme/theme";
@@ -70,9 +61,7 @@ const RessourceForm = () => {
     }
   };
 
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
-    [],
-  );
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [types, setTypes] = useState<{ id: string; name: string }[]>([]);
 
   const getCategoryOption = useCallback(async () => {
@@ -95,15 +84,7 @@ const RessourceForm = () => {
       if (editId && typeof editId === "string") {
         const result = await getRessource(editId);
         if (result?.data) {
-          const {
-            title,
-            description,
-            maxParticipant,
-            deadLine,
-            category,
-            typeRessource,
-            step,
-          } = result.data;
+          const { title, description, maxParticipant, deadLine, category, typeRessource, step } = result.data;
           setValue("title", title);
           setValue("description", description);
           setValue("maxParticipant", maxParticipant?.toString());
@@ -133,12 +114,7 @@ const RessourceForm = () => {
   return (
     <PaperProvider theme={customTheme}>
       <ScrollView contentContainerStyle={styles.container}>
-        <StepModal
-          visible={stepModalVisible}
-          onClose={() => setStepModalVisible(false)}
-          onSave={handleStepsSave}
-          existingSteps={steps}
-        />
+        <StepModal visible={stepModalVisible} onClose={() => setStepModalVisible(false)} onSave={handleStepsSave} existingSteps={steps} />
         {/* 
         <Text variant="titleLarge" style={styles.title}>
           Modifier une ressource
@@ -149,14 +125,7 @@ const RessourceForm = () => {
           name="title"
           rules={{ required: "Titre requis" }}
           render={({ field: { onChange, value } }) => (
-            <TextInput
-              label="Titre"
-              value={value}
-              onChangeText={onChange}
-              mode="outlined"
-              error={!!errors.title}
-              style={styles.input}
-            />
+            <TextInput label="Titre" value={value} onChangeText={onChange} mode="outlined" error={!!errors.title} style={styles.input} />
           )}
         />
         <HelperText type="error" visible={!!errors.title}>
@@ -168,15 +137,7 @@ const RessourceForm = () => {
           name="description"
           rules={{ required: "Description requise" }}
           render={({ field: { onChange, value } }) => (
-            <TextInput
-              label="Description"
-              value={value}
-              onChangeText={onChange}
-              mode="outlined"
-              multiline
-              error={!!errors.description}
-              style={styles.input}
-            />
+            <TextInput label="Description" value={value} onChangeText={onChange} mode="outlined" multiline error={!!errors.description} style={styles.input} />
           )}
         />
         <HelperText type="error" visible={!!errors.description}>
@@ -205,14 +166,8 @@ const RessourceForm = () => {
           rules={{ required: "Date requise" }}
           render={({ field: { value } }) => (
             <>
-              <Button
-                mode="outlined"
-                onPress={() => setShowDatePicker(true)}
-                style={styles.input}
-              >
-                {value
-                  ? new Date(value).toLocaleDateString()
-                  : "Choisir une date limite"}
+              <Button mode="outlined" onPress={() => setShowDatePicker(true)} style={styles.input}>
+                {value ? new Date(value).toLocaleDateString() : "Choisir une date limite"}
               </Button>
               {showDatePicker && (
                 <DateTimePicker
@@ -221,8 +176,7 @@ const RessourceForm = () => {
                   display="default"
                   onChange={(event, selectedDate) => {
                     setShowDatePicker(false);
-                    if (selectedDate)
-                      setValue("deadLine", selectedDate.toISOString());
+                    if (selectedDate) setValue("deadLine", selectedDate.toISOString());
                   }}
                 />
               )}
@@ -241,11 +195,7 @@ const RessourceForm = () => {
                 <Picker selectedValue={value} onValueChange={onChange}>
                   <Picker.Item label="Sélectionnez une catégorie..." value="" />
                   {categoryOptions.map((option) => (
-                    <Picker.Item
-                      key={option.value}
-                      label={option.label}
-                      value={option.value}
-                    />
+                    <Picker.Item key={option.value} label={option.label} value={option.value} />
                   ))}
                 </Picker>
               </View>
@@ -267,11 +217,7 @@ const RessourceForm = () => {
                 <Picker selectedValue={value} onValueChange={onChange}>
                   <Picker.Item label="Sélectionnez un type..." value="" />
                   {typeOptions.map((option) => (
-                    <Picker.Item
-                      key={option.value}
-                      label={option.label}
-                      value={option.value}
-                    />
+                    <Picker.Item key={option.value} label={option.label} value={option.value} />
                   ))}
                 </Picker>
               </View>
@@ -294,9 +240,7 @@ const RessourceForm = () => {
                   <Text style={styles.stepOrder}>{step.order}.</Text>
                   <View style={styles.stepContent}>
                     <Text style={styles.stepTitle}>{step.title}</Text>
-                    <Text style={styles.stepDescription}>
-                      {step.description}
-                    </Text>
+                    <Text style={styles.stepDescription}>{step.description}</Text>
                   </View>
                 </View>
               ))}

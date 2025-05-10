@@ -1,14 +1,17 @@
 import { useConntedUser } from "../utils/ConnectedUserContext";
 import { ApiResponse } from "../utils/types/Api.types";
-import { Ressource } from "../utils/types/Ressources.types";
+import { Article } from "../utils/types/Articles.types";
 
 const _URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const getRessources = async (): Promise<
-  ApiResponse<Ressource[]> | undefined
+export const getArticles = async (
+  page: number = 1,
+  pageSize: number = 50
+): Promise<
+  ApiResponse<Article[]> | undefined
 > => {
   try {
-    const response = await fetch(`${_URL}ressource`, {
+    const response = await fetch(`${_URL}article?page=${page}&perPage=${pageSize}`, {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
@@ -19,11 +22,11 @@ export const getRessources = async (): Promise<
   }
 };
 
-export const getRessource = async (
+export const getArticle = async (
   id: string
-): Promise<ApiResponse<Ressource> | undefined> => {
+): Promise<ApiResponse<Article> | undefined> => {
   try {
-    const response = await fetch(`${_URL}ressource/${id}`, {
+    const response = await fetch(`${_URL}article/${id}`, {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
@@ -34,11 +37,11 @@ export const getRessource = async (
   }
 };
 
-export const getUserRessource = async (
+export const getUserArticle = async (
   citizenId: string
-): Promise<ApiResponse<Ressource> | undefined> => {
+): Promise<ApiResponse<Article> | undefined> => {
   try {
-    const response = await fetch(`${_URL}ressource/citizen/${citizenId}`, {
+    const response = await fetch(`${_URL}article/citizen/${citizenId}`, {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
@@ -49,11 +52,11 @@ export const getUserRessource = async (
   }
 };
 
-export const createRessource = async (
+export const createArticle = async (
   data: any
-): Promise<ApiResponse<Ressource> | undefined> => {
+): Promise<ApiResponse<Article> | undefined> => {
   try {
-    const response = await fetch(`${_URL}ressource`, {
+    const response = await fetch(`${_URL}article`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -66,12 +69,12 @@ export const createRessource = async (
   }
 };
 
-export const updateRessource = async (
-  ressourceId: string,
+export const updateArticle = async (
+  articleId: string,
   data: any
-): Promise<ApiResponse<Ressource> | undefined> => {
+): Promise<ApiResponse<Article> | undefined> => {
   try {
-    const response = await fetch(`${_URL}ressource/${ressourceId}`, {
+    const response = await fetch(`${_URL}article/${articleId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -84,11 +87,11 @@ export const updateRessource = async (
   }
 };
 
-export const deleteRessource = async (
-  ressourceId: string
-): Promise<ApiResponse<Ressource> | undefined> => {
+export const deleteArticle = async (
+  articleId: string
+): Promise<ApiResponse<Article> | undefined> => {
   try {
-    const response = await fetch(`${_URL}ressource/${ressourceId}`, {
+    const response = await fetch(`${_URL}article/${articleId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json; charset=utf-8",

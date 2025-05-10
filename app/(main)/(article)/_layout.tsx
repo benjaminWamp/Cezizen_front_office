@@ -1,7 +1,8 @@
 import { useAuth } from "@clerk/clerk-expo";
-import { Redirect } from "expo-router";
+import { Redirect, useNavigation } from "expo-router";
 import { Stack } from "expo-router/stack";
 import { useConntedUser } from "../../../utils/ConnectedUserContext";
+import { Button } from "react-native";
 
 export default function Layout() {
   const { isSignedIn } = useAuth();
@@ -12,12 +13,18 @@ export default function Layout() {
   }
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerShown: true,
+        headerBackVisible: true,
+      }}
+    >
       <Stack.Screen
-        name="index"
-        options={{
-          headerShown: false,
-        }}
+        name="[id]"
+        // on récupère route.params.name et on l'affiche comme titre
+        options={({ route }) => ({
+          title: (route.params as { name?: string })?.name ?? "Détail de la ressource",
+        })}
       />
     </Stack>
   );

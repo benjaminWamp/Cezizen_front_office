@@ -16,37 +16,26 @@ export default function Layout() {
       <Tabs.Screen
         name="(home)"
         options={{
-          title: "Home",
+          title: "Articles",
           tabBarIcon: () => <Icon size={20} source="home" />,
           headerShown: false,
           popToTopOnBlur: true,
         }}
       />
       <Tabs.Screen
-        name="(ressource)"
+        name="(article)"
         options={{
           href: null,
           title: "",
           headerShown: false,
-          tabBarIcon: () => <Icon size={20} source="plus-box" />,
         }}
       />
       <Tabs.Screen
         name="(onGoingRessource)"
         options={{
-          title: "Activité",
+          title: "Exercices",
           headerShown: false,
           tabBarIcon: () => <Icon size={20} source="camera-timer" />,
-          popToTopOnBlur: true,
-        }}
-      />
-
-      <Tabs.Screen
-        name="(creation)"
-        options={{
-          title: "Créer",
-          headerShown: false,
-          tabBarIcon: () => <Icon size={20} source="plus" />,
           popToTopOnBlur: true,
         }}
       />
