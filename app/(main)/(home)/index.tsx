@@ -35,7 +35,7 @@ const RenderItem = ({ item }: { item: Article }) => {
             </Text>
 
             <View style={styles.badgeContainer}>
-              <View style={[styles.categoryBadge, { backgroundColor: colors.primary }]}>
+              <View style={[styles.categoryBadge, { backgroundColor: colors.secondary }]}>
                 <Text style={styles.badgeText}>{item.category.label}</Text>
               </View>
             </View>
@@ -111,7 +111,7 @@ export default function Page() {
 
   return (
     <PaperProvider theme={customTheme}>
-      <View>
+      <View style={styles.container}>
         <Title style={styles.greeting}>Bienvenue dans CeziZen !</Title>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
           <Chip style={styles.chip} selected={!selectedCategory} onPress={() => handleCategoryChange(null)}>
@@ -139,11 +139,11 @@ export default function Page() {
           <Text style={styles.emptyText}>Aucune ressource disponible !</Text>
         )}
         <View style={styles.paginationContainer}>
-          <Button onPress={handlePrevPage} disabled={page === 1}>
+          <Button onPress={handlePrevPage} disabled={page === 1} labelStyle={{ color: "#FFF" }}>
             Précédent
           </Button>
-          <Text>{`Page ${page} sur ${totalPages}`}</Text>
-          <Button onPress={handleNextPage} disabled={page === totalPages}>
+          <Text style={{ color: "#FFF" }}>{`Page ${page} sur ${totalPages}`}</Text>
+          <Button onPress={handleNextPage} disabled={page === totalPages} labelStyle={{ color: "#FFF" }}>
             Suivant
           </Button>
         </View>
@@ -155,7 +155,7 @@ export default function Page() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f4f6f8",
+    backgroundColor: "#253334",
     padding: 12,
   },
   titleContainer: {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   chip: {
     color: "#f4f6f8",
-    backgroundColor: "#4BA8B4",
+    backgroundColor: "#7C9A92",
     marginRight: 8,
     height: 30,
   },
@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#fff",
   },
   badge: {
     marginRight: 8,

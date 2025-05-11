@@ -44,14 +44,7 @@ export default function Page() {
         <Card.Content>
           <Title style={styles.title}>Connexion</Title>
 
-          <TextInput
-            label="Adresse email"
-            mode="outlined"
-            value={emailAddress}
-            autoCapitalize="none"
-            onChangeText={setEmailAddress}
-            style={styles.input}
-          />
+          <TextInput label="Adresse email" mode="outlined" value={emailAddress} autoCapitalize="none" onChangeText={setEmailAddress} style={styles.input} />
 
           <TextInput
             label="Mot de passe"
@@ -60,19 +53,10 @@ export default function Page() {
             secureTextEntry={!showPassword}
             onChangeText={setPassword}
             style={styles.input}
-            right={
-              <TextInput.Icon
-                icon={showPassword ? "eye-off" : "eye"}
-                onPress={() => setShowPassword((prev) => !prev)}
-              />
-            }
+            right={<TextInput.Icon icon={showPassword ? "eye-off" : "eye"} onPress={() => setShowPassword((prev) => !prev)} />}
           />
 
-          <Button
-            mode="contained"
-            onPress={onSignInPress}
-            style={styles.button}
-          >
+          <Button mode="contained" onPress={onSignInPress} style={styles.button}>
             Se connecter
           </Button>
 
@@ -83,7 +67,7 @@ export default function Page() {
             </Link>
           </View>
 
-          <Button mode="text" onPress={handleNonSignIn}>
+          <Button mode="text" onPress={handleNonSignIn} labelStyle={{ color: "#7C9A92" }}>
             Continuer sans compte
           </Button>
         </Card.Content>
@@ -97,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#253334",
   },
   card: {
     padding: 20,
@@ -113,6 +97,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
     marginBottom: 20,
+    backgroundColor: "#7C9A92",
   },
   signupContainer: {
     flexDirection: "row",
@@ -121,7 +106,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   signupLink: {
-    color: "#1976d2",
+    color: "#7C9A92",
     marginLeft: 5,
   },
 });

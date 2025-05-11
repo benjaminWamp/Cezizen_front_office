@@ -1,31 +1,13 @@
-import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Button, Chip, Divider, PaperProvider, Text, Card } from "react-native-paper";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { Chip, PaperProvider, Text, Card } from "react-native-paper";
 import React, { useState } from "react";
 import { View, StyleSheet, Image, ScrollView } from "react-native";
 import { Article } from "../../../utils/types/Articles.types";
 import { getArticle } from "../../../services/articles.service";
 
-import { useAuth } from "@clerk/clerk-expo";
-import { useForm } from "react-hook-form";
-import { useConntedUser } from "../../../utils/ConnectedUserContext";
 import { customTheme } from "../../../utils/theme/theme";
 
 const ArticleDetails = () => {
-  const { isSignedIn } = useAuth();
-  const { connectedUser } = useConntedUser();
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-    },
-  });
-
   const { id } = useLocalSearchParams<Record<string, string>>();
   const [article, setArticle] = useState<Article | undefined>(undefined);
 
@@ -38,31 +20,9 @@ const ArticleDetails = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      let isActive = true;
-
       getDatas();
-
-      return () => {
-        isActive = false;
-      };
     }, [id])
   );
-
-  const onSubmit = async (data: { title: string; description: string }) => {
-    if (connectedUser) {
-      const comment = {
-        ...data,
-        citizenId: connectedUser?.id,
-        articleId: id,
-      };
-      try {
-        reset();
-        getDatas();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
 
   return (
     <>
@@ -86,14 +46,14 @@ const ArticleDetails = () => {
 
                   <View style={styles.badgeContainer}>
                     <Chip icon="tag" style={styles.categoryChip}>
-                      {article.category.label}
+                      <Text style={styles.categoryText}>{article.category.label}</Text>
                     </Chip>
                   </View>
 
                   <Text variant="bodyLarge" style={styles.description}>
                     {article.description}
                   </Text>
-                  <Text variant="bodyLarge" style={styles.description}>
+                  <Text variant="bodyLarge" style={styles.content}>
                     {article.content}
                   </Text>
                 </Card.Content>
@@ -111,7 +71,7 @@ export default ArticleDetails;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#253334",
     flex: 1,
   },
   scrollContent: {
@@ -140,6 +100,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
     lineHeight: 20,
     color: "#333",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  content: {
+    marginTop: 16,
+    lineHeight: 20,
+    color: "#333",
   },
   badgeContainer: {
     flexDirection: "row",
@@ -149,8 +116,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   categoryChip: {
-    backgroundColor: "#e3f2fd",
+    backgroundColor: "#7C9A92",
     alignSelf: "flex-start",
+  },
+  categoryText: {
+    color: "#fff",
   },
   image: {
     width: "100%",

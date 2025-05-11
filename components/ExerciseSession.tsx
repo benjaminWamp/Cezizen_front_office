@@ -1,6 +1,5 @@
 import { Card, Text } from "react-native-paper";
-import { CommentType } from "../utils/types/Comment.types";
-import { parseStringDate } from "../utils/functions/datesFunction";
+import { parseStringDate, parseStringHour } from "../utils/functions/datesFunction";
 import { StyleSheet } from "react-native";
 import { useConntedUser } from "../utils/ConnectedUserContext";
 import { ExerciseSessionType } from "../utils/types/ExerciseSession.types";
@@ -15,19 +14,21 @@ const CommentCard = (props: CommentCardProps) => {
   const isCurrentUser = connectedUser?.id === exerciseSession.user.id;
 
   return (
-    <Card key={exerciseSession.id} style={[styles.card, isCurrentUser ? styles.currentUserBubble : styles.otherUserBubble]}>
+    <Card key={exerciseSession.id} style={[styles.card]}>
       <Card.Title
-        title={exerciseSession.exercise.label}
-        subtitle={`${exerciseSession.exercise.description} `}
+        title={`Titre : ${exerciseSession.exercise.label}`}
+        subtitle={`Description : ${exerciseSession.exercise.description} `}
         titleStyle={[styles.title, isCurrentUser && styles.currentUserText]}
         subtitleStyle={[styles.subtitle, isCurrentUser && styles.currentUserText]}
       />
       <Card.Content>
+        {exerciseSession.notes && (
+          <Text variant="bodyMedium" style={[styles.description, isCurrentUser && styles.currentUserText]}>
+            Notes : {exerciseSession.notes}
+          </Text>
+        )}
         <Text variant="bodyMedium" style={[styles.description, isCurrentUser && styles.currentUserText]}>
-          {exerciseSession.notes}
-        </Text>
-        <Text variant="bodyMedium" style={[styles.description, isCurrentUser && styles.currentUserText]}>
-          {`Fait le ${exerciseSession.endDate} `}
+          {`Fait le ${parseStringDate(new Date(exerciseSession.endDate).toISOString())} à ${parseStringHour(new Date(exerciseSession.endDate).toISOString())} `}
         </Text>
       </Card.Content>
     </Card>
@@ -39,6 +40,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 10,
     elevation: 4,
+    height: "25%",
+    marginRight: 16,
+    backgroundColor: "#7C9A92",
   },
   title: {
     fontSize: 18,
@@ -53,14 +57,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: "#444",
-  },
-  otherUserBubble: {
-    backgroundColor: "#f0f0f0",
-    borderTopLeftRadius: 0,
-  },
-  currentUserBubble: {
-    backgroundColor: "#f9921e",
-    borderTopRightRadius: 0,
   },
   currentUserText: {
     color: "#ffffff",

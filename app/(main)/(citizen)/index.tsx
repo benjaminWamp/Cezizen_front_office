@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, FlatList, StyleSheet, Text as RNText, ScrollView } from "react-native";
-import { Title, Divider, IconButton, Text, PaperProvider } from "react-native-paper";
-import { useRouter, Redirect, useFocusEffect } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { View, FlatList, StyleSheet, ScrollView } from "react-native";
+import { Title, IconButton, Text, PaperProvider } from "react-native-paper";
+import { useRouter, Redirect } from "expo-router";
 import { useConntedUser } from "../../../utils/ConnectedUserContext";
-import { SignOutButton } from "../../../components/SignOutButton";
 import { customTheme } from "../../../utils/theme/theme";
 import { ExerciseSessionType } from "../../../utils/types/ExerciseSession.types";
 import { getExerciseSessions } from "../../../services/exercise-session.service";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import ExerciseSession from "../../../components/ExerciseSession";
+import { useClerk } from "@clerk/clerk-expo";
+import * as Linking from "expo-linking";
 
 const UserPage = () => {
-  const { userChoseToUnconnect, connectedUser } = useConntedUser();
+  const { userChoseToUnconnect, connectedUser, handleNonConnectedUser } = useConntedUser();
   const [exerciseSessions, setExerciseSessions] = useState<ExerciseSessionType[]>([]);
+  const { signOut } = useClerk();
 
   const router = useRouter();
 
@@ -37,12 +38,26 @@ const UserPage = () => {
       });
   }, []);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      handleNonConnectedUser(false);
+      // Redirect to your desired page
+      Linking.openURL(Linking.createURL("/"));
+    } catch (err) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error(JSON.stringify(err, null, 2));
+    }
+  };
+
   return (
     <PaperProvider theme={customTheme}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <Title style={styles.greeting}>Bonjour {connectedUser.firstname} 👋</Title>
-          <IconButton icon="cog-outline" size={24} onPress={() => router.push("/accountSettings")} />
+          <IconButton icon="exit-to-app" size={24} onPress={handleSignOut} iconColor={"#e0281b"} />
+          <IconButton icon="cog-outline" size={24} onPress={() => router.push("/accountSettings")} iconColor={"#FFF"} />
         </View>
         <FlatList
           data={exerciseSessions}
@@ -53,8 +68,6 @@ const UserPage = () => {
           contentContainerStyle={styles.horizontalList}
           ListEmptyComponent={<Text style={styles.empty}>Aucun exercice de fait</Text>}
         />
-
-        <SignOutButton />
       </ScrollView>
     </PaperProvider>
   );
@@ -62,8 +75,9 @@ const UserPage = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: "#fff",
+    padding: 12,
+    backgroundColor: "#253334",
+    flexGrow: 1,
   },
   headerRow: {
     flexDirection: "row",
@@ -74,6 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     flex: 1,
+    color: "#FFF",
   },
   lists: {
     marginVertical: 10,

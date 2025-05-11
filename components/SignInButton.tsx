@@ -11,9 +11,22 @@ export const SignInButton = () => {
     router.navigate("/sign-in");
   };
 
+  const styles = {
+    button: {
+      backgroundColor: "#7C9A92",
+      padding: 10,
+      borderRadius: 5,
+      marginTop: 20,
+    },
+    buttonText: {
+      color: "#fff",
+      fontSize: 16,
+    },
+  };
+
   return (
-    <TouchableOpacity onPress={handleSignIn}>
-      <Text>Me connecter</Text>
+    <TouchableOpacity onPress={handleSignIn} style={styles.button}>
+      <Text style={styles.buttonText}>Me connecter</Text>
     </TouchableOpacity>
   );
 };

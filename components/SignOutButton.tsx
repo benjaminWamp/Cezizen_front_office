@@ -1,6 +1,6 @@
 import { useClerk } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useConntedUser } from "../utils/ConnectedUserContext";
 
 export const SignOutButton = () => {
@@ -21,9 +21,24 @@ export const SignOutButton = () => {
     }
   };
 
+  const styles = StyleSheet.create({
+    button: {
+      backgroundColor: "#7C9A92",
+      padding: 10,
+      borderRadius: 5,
+      marginTop: 20,
+      width: "100%",
+      alignItems: "center",
+    },
+    buttonText: {
+      color: "#fff",
+      fontSize: 16,
+    },
+  });
+
   return (
-    <TouchableOpacity onPress={handleSignOut}>
-      <Text>Déconnexion</Text>
+    <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+      <Text style={styles.buttonText}>Se déconnecter</Text>
     </TouchableOpacity>
   );
 };

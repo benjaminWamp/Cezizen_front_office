@@ -29,6 +29,7 @@
       "expo-router",
       "expo-font"
     ],
-    "scheme": "myapp"
+    "scheme": "myapp",
+    "jsEngine": "hermes"
   }
 }

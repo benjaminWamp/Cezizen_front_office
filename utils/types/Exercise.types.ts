@@ -5,7 +5,7 @@ export interface ExerciseType {
   label: string;
   times: string;
     description: string;
-    inspirtation: number;
+    inspiration: number;
     expiration: number;
     apnea: number
     sessions: ExerciseSessionType[];

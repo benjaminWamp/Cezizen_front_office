@@ -17,11 +17,14 @@ export default function Layout() {
       screenOptions={{
         headerShown: true,
         headerBackVisible: true,
+        headerStyle: {
+          backgroundColor: "#7C9A92",
+        },
+        headerTintColor: "#fff",
       }}
     >
       <Stack.Screen
         name="[id]"
-        // on récupère route.params.name et on l'affiche comme titre
         options={({ route }) => ({
           title: (route.params as { name?: string })?.name ?? "Détail de la ressource",
         })}

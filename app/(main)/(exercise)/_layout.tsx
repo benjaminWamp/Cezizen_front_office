@@ -11,10 +11,5 @@ export default function Layout() {
     return <Redirect href={"/sign-in"} />;
   }
 
-  return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="chatScreen" options={{ title: "Messagerie" }} />
-    </Stack>
-  );
+  return <Stack screenOptions={{ headerShown: false }}></Stack>;
 }

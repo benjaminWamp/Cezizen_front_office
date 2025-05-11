@@ -2,6 +2,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { Redirect, Tabs } from "expo-router";
 import { Icon } from "react-native-paper";
 import { useConntedUser } from "../../utils/ConnectedUserContext";
+import { Platform } from "react-native";
 
 export default function Layout() {
   const { isSignedIn } = useAuth();
@@ -12,14 +13,31 @@ export default function Layout() {
   }
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "blue" }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#FFF",
+        tabBarInactiveTintColor: "#253334",
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          backgroundColor: "#7C9A92",
+          height: Platform.OS === "ios" ? 80 : 60,
+          paddingBottom: Platform.OS === "ios" ? 20 : 10,
+          borderTopWidth: 0,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOpacity: 0.1,
+          shadowOffset: { width: 0, height: -3 },
+        },
+      }}
+    >
       <Tabs.Screen
         name="(home)"
         options={{
           title: "Articles",
-          tabBarIcon: () => <Icon size={20} source="home" />,
+          tabBarIcon: ({ color }) => <Icon size={20} source="home" color={color} />,
           headerShown: false,
           popToTopOnBlur: true,
+          tabBarActiveTintColor: "#FFF",
         }}
       />
       <Tabs.Screen
@@ -31,11 +49,11 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="(onGoingRessource)"
+        name="(exercise)"
         options={{
           title: "Exercices",
           headerShown: false,
-          tabBarIcon: () => <Icon size={20} source="camera-timer" />,
+          tabBarIcon: ({ color }) => <Icon size={20} source="camera-timer" color={color} />,
           popToTopOnBlur: true,
         }}
       />
@@ -45,7 +63,7 @@ export default function Layout() {
         options={{
           title: "Compte",
           headerShown: false,
-          tabBarIcon: () => <Icon size={20} source="account" />,
+          tabBarIcon: ({ color }) => <Icon size={20} source="account" color={color} />,
           popToTopOnBlur: true,
         }}
       />

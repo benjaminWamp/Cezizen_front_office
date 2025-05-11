@@ -97,7 +97,11 @@ const AccountSettings = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+      style={{ flex: 1, backgroundColor: "#253334" }}
+    >
       <PaperProvider theme={customTheme}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.title}>Modifier mes informations</Text>
@@ -229,7 +233,7 @@ const AccountSettings = () => {
           <SignOutButton />
 
           {/* Bouton pour ouvrir la modale de suppression de compte */}
-          <Button mode="text" textColor={theme.colors.error} style={styles.button} onPress={() => setDeleteDialogVisible(true)}>
+          <Button mode="text" textColor="#FFF" style={[styles.button, { backgroundColor: "#e0281b" }]} onPress={() => setDeleteDialogVisible(true)}>
             Supprimer mon compte
           </Button>
 
@@ -255,18 +259,20 @@ const AccountSettings = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#253334",
   },
   title: {
     fontWeight: "bold",
     fontSize: 18,
     marginBottom: 10,
+    color: "#FFF",
   },
   input: {
     marginBottom: 10,
   },
   button: {
     marginVertical: 10,
+    backgroundColor: "#7C9A92",
   },
   divider: {
     marginVertical: 25,

@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#253334",
   },
   card: {
     padding: 20,
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
     marginBottom: 20,
+    backgroundColor: "#7C9A92",
   },
   signinContainer: {
     flexDirection: "row",
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   signinLink: {
-    color: "#1976d2",
+    color: "#7C9A92",
     marginLeft: 5,
   },
 });

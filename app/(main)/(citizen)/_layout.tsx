@@ -12,17 +12,10 @@ export default function Layout() {
   }
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerStyle: { backgroundColor: "#7C9A92" } }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="unConnectedUserPage"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="updateRessource"
-        options={{ title: "Modifier une ressource" }}
-      />
-      <Stack.Screen name="accountSettings" options={{ title: "Paramètres" }} />
+      <Stack.Screen name="unConnectedUserPage" options={{ headerShown: false }} />
+      <Stack.Screen name="accountSettings" options={{ title: "Paramètres", headerTintColor: "#FFF" }} />
     </Stack>
   );
 }
